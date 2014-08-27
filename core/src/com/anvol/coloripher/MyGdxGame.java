@@ -24,7 +24,7 @@ public class MyGdxGame extends Game {
         gameScreen = new GameplayScreen(this);
         overScreen = new GameoverScreen(this);
         this.setScreen(gameScreen);
-        backgroundTrack = Gdx.audio.newMusic(Gdx.files.internal("back.ogg"));
+        backgroundTrack = Gdx.audio.newMusic(Gdx.files.internal("back_fool.mp3"));
         backgroundTrack.setLooping(true);
         backgroundTrack.play();
 	}

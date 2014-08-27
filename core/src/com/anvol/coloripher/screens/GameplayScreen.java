@@ -42,7 +42,10 @@ public class GameplayScreen extends BaseScreen {
     public void startNewGame() {
         stage.dispose();
         stage = new GameplayStage(viewport);
+        game.backgroundTrack.stop();
+        game.backgroundTrack.play();
         game.backgroundTrack.setVolume(1f);
+
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -58,7 +61,7 @@ public class GameplayScreen extends BaseScreen {
         stage.draw();
 
         if (stage.finished){
-            game.backgroundTrack.setVolume(0.5f);
+            game.backgroundTrack.setVolume(0.2f);
             game.overScreen.setScore(stage.getMaxScore());
             game.setScreen(game.overScreen);
         }

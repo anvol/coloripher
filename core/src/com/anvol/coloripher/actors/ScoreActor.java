@@ -1,5 +1,6 @@
 package com.anvol.coloripher.actors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -22,7 +23,8 @@ public class ScoreActor extends Label {
     public void addScore(long add){
         value += add;
         maxValue = maxValue < value ? value : maxValue;
-        setText("Level: " + Long.toString(level) + "\nScore: " + Long.toString(value) + "\nMax: " + Long.toString(maxValue));
+        setText("Level: " + Long.toString(level) + "\nScore: " + Long.toString(value) + "\nMax: " + Long.toString(maxValue) + "\nMemory (in kb): "+
+                Long.toString(Gdx.app.getJavaHeap()/1024) + ",  "+ Long.toString(Gdx.app.getNativeHeap()/1024));
     }
 
     public void setLevel(long level) {

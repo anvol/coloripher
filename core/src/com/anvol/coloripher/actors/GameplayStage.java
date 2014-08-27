@@ -72,7 +72,7 @@ public class GameplayStage extends Stage {
         groupUI.addActor(btnLeft);
 
         final CircleActor btnRight = new CircleActor(sr, colors.get(1), 45);
-        btnRight.setPosition(685, 50);
+        btnRight.setPosition(675, 50);
         btnRight.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 bulb.setColor(btnRight.getColor());
@@ -95,7 +95,7 @@ public class GameplayStage extends Stage {
         score.addScore(add);
     }
 
-    float deltaNewIndiego = 0;
+    float deltaNewBubble = 0;
 
     @Override
     public void act(float delta) {
@@ -109,9 +109,9 @@ public class GameplayStage extends Stage {
             return;
         }
 
-        deltaNewIndiego += delta;
-        if (deltaNewIndiego >= 1){
-            deltaNewIndiego = 0;
+        deltaNewBubble += delta;
+        if (deltaNewBubble >= 1.5f-level*0.05f) {
+            deltaNewBubble = 0;
             createBubble();
         }
 
@@ -121,7 +121,7 @@ public class GameplayStage extends Stage {
 
     long lastLevel = 1;
 
-    final long baseLevel = 30000;
+    final long baseLevel = 20000;
     private void setLevel(long score) {
         level = 2*score / baseLevel;
         if (level <= 0) level = 1;
@@ -151,7 +151,7 @@ public class GameplayStage extends Stage {
         addActor(btnLeftUpper);
 
         final CircleActor btnRightUpper = new CircleActor(sr, colors.get(3), 45);
-        btnRightUpper.setPosition(705, 140);
+        btnRightUpper.setPosition(695, 140);
         btnRightUpper.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 bulb.setColor(btnRightUpper.getColor());
@@ -193,7 +193,7 @@ public class GameplayStage extends Stage {
                 else
                 {
                     actor.connected = true;
-                    addScore((long) (-actor.radius * 200));
+                    addScore((long) (-actor.radius * 120));
                 }
             }
         }
@@ -202,10 +202,10 @@ public class GameplayStage extends Stage {
     private void createBubble() {
         CircleActor actor = poolActors.obtain();
         actor.setVisible(true);
-        actor.setPosition(MathUtils.random(-200, 1000), 500);
+        actor.setPosition(MathUtils.random(-100, 900), 500);
 
         actor.addAction(Actions.sequence(
-                Actions.moveTo(400, -150, MathUtils.random(4 - 0.2f * (level - 1), 8 - 0.4f * (level - 1)), Interpolation.linear),
+                Actions.moveTo(400, -150, MathUtils.random(5 - 0.2f * (level - 1), 10 - 0.4f * (level - 1))),
                 Actions.removeActor()));
         groupBulb.addActor(actor);
         listActiveActors.add(actor);
