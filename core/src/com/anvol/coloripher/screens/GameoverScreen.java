@@ -32,18 +32,18 @@ public class GameoverScreen extends BaseScreen{
         camera = new OrthographicCamera();
 
         viewport = new FillViewport(800, 480, camera);
+        Gdx.input.setCatchBackKey(true);
         stage = new Stage(viewport) {
             @Override
             public boolean keyDown(int keyCode) {
-                if (keyCode == Input.Keys.BACK && totalVisible > 1) {
+                if (keyCode == Input.Keys.BACK) {
                     Gdx.app.exit();
                 }
                 return super.keyDown(keyCode);
             }
         };
         Gdx.input.setInputProcessor(stage);
-        Gdx.input.setCatchBackKey(true);
-        
+
         addUI();
     }
 

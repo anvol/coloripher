@@ -1,7 +1,9 @@
 package com.anvol.coloripher.actors;
 
+import com.anvol.coloripher.screens.GameplayScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
@@ -22,12 +24,17 @@ import java.util.Iterator;
  */
 public class GameplayStage extends Stage {
 
-    protected Array<CircleActor> indiego = new Array<CircleActor>();
     protected Group groupBulb;
     protected ScoreActor score;
     final ShapeRenderer sr = new ShapeRenderer();
     final BulbActor bulb = new BulbActor(sr, Color.GRAY);
     final public Array<Color> colors = new Array<Color>(2);
+
+    protected Sound soundBadup, soundGoodup, soundPowerup;
+
+    //config
+    final float MAX_BUBBLE_RADIUS = 50f;
+    final float MIN_BUBBLE_RADIUS = 5f;
 
     protected Pool<CircleActor> poolActors;
     protected Array<CircleActor> listActiveActors = new Array<CircleActor>(false, 100);
@@ -37,22 +44,23 @@ public class GameplayStage extends Stage {
 
     public GameplayStage(Viewport viewport) {
         super(viewport);
+
         // colors from https://kuler.adobe.com/Pirate-Pop-Colors-color-theme-4182026/
         colors.add(new Color((0x98 & 0xFF) / 255f, (0xC0 & 0xFF) / 255f, 0, 1));
         colors.add(new Color((0xEA & 0xFF) / 255f, (0x2E & 0xFF) / 255f, (0x49 & 0xFF) / 255f, 1));
 
-//        colors.add(new Color((0xFF & 0xFF) / 255f, (0xE1 & 0xFF) / 255f, (0x1A & 0xFF) / 255f, 1));
-//        colors.add(new Color((0x0C & 0xFF) / 255f, (0xDB & 0xFF) / 255f, (0xE8 & 0xFF) / 255f, 1));
-
-        final GameplayStage s = this;
         poolActors = new Pool<CircleActor>(100) {
             @Override
             protected CircleActor newObject() {
-                return new CircleActor(s, sr, colors.random(), MathUtils.random(5, 50));
+                return new CircleActor(sr, colors.random(), MathUtils.random(MIN_BUBBLE_RADIUS, MAX_BUBBLE_RADIUS));
             }
         };
 
         createUI();
+
+        soundBadup = Gdx.audio.newSound(Gdx.files.internal("badup.wav"));
+        soundGoodup = Gdx.audio.newSound(Gdx.files.internal("goodup.wav"));
+        soundPowerup = Gdx.audio.newSound(Gdx.files.internal("powerup.wav"));
     }
 
     void createUI(){
@@ -110,7 +118,7 @@ public class GameplayStage extends Stage {
         }
 
         deltaNewBubble += delta;
-        if (deltaNewBubble >= 1.5f-level*0.05f) {
+        if (deltaNewBubble >= Math.max(0.2f, 1.5f-level*0.05f)) {
             deltaNewBubble = 0;
             createBubble();
         }
@@ -187,16 +195,26 @@ public class GameplayStage extends Stage {
 
             if (bulb.getShape().contains(actor.getX(), actor.getY())){
                 if (actor.getColor().toIntBits() == bulb.getColor().toIntBits()){
-                    actor.connected = true;
-                    addScore((long) (actor.radius * 100));
+                    goodBubble(actor);
                 }
                 else
                 {
-                    actor.connected = true;
-                    addScore((long) (-actor.radius * 120));
+                    badBubble(actor);
                 }
             }
         }
+    }
+
+    private void goodBubble(CircleActor actor){
+        actor.connected = true;
+        addScore((long) (actor.radius * 100));
+        soundGoodup.play(1f);
+    }
+
+    private void badBubble(CircleActor actor){
+        actor.connected = true;
+        addScore((long) (-actor.radius * 80));
+        soundBadup.play(1f);
     }
 
     private void createBubble() {
@@ -205,7 +223,7 @@ public class GameplayStage extends Stage {
         actor.setPosition(MathUtils.random(-100, 900), 500);
 
         actor.addAction(Actions.sequence(
-                Actions.moveTo(400, -150, MathUtils.random(5 - 0.2f * (level - 1), 10 - 0.4f * (level - 1))),
+                Actions.moveTo(400, -150, Math.max(2, MathUtils.random(4 - 0.1f * level, 10 - 0.2f * level))),
                 Actions.removeActor()));
         groupBulb.addActor(actor);
         listActiveActors.add(actor);
@@ -213,5 +231,14 @@ public class GameplayStage extends Stage {
 
     public long getMaxScore() {
         return score.getMaxScore();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        sr.dispose();
+        soundBadup.dispose();
+        soundGoodup.dispose();
+        soundPowerup.dispose();
     }
 }

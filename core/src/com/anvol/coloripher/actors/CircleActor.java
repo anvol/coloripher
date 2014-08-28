@@ -15,21 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
  * Created by Andrey on 18.08.2014.
  */
 public class CircleActor extends Actor {
-    protected final GameplayStage game;
     protected float radius = 0.0f;
     protected ShapeRenderer shapeRenderer;
     public boolean connected = false;
 
     public CircleActor(ShapeRenderer shapeRenderer, Color color, float radius) {
-        this.game = null;
-        this.shapeRenderer = shapeRenderer;
-        this.setColor(color);
-        this.radius = radius;
-        this.setSize(2 * radius, 2 * radius);
-    }
-
-    public CircleActor(GameplayStage gameplayStage, ShapeRenderer shapeRenderer, Color color, float radius) {
-        this.game = gameplayStage;
         this.shapeRenderer = shapeRenderer;
         this.setColor(color);
         this.radius = radius;

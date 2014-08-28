@@ -26,8 +26,6 @@ public class GameplayScreen extends BaseScreen {
 
     private GameplayStage stage;
 
-    final MyGdxGame game;
-
     public GameplayScreen(final MyGdxGame gam) {
         game = gam;
 

@@ -29,6 +29,7 @@ public class ScoreActor extends Label {
 
     public void setLevel(long level) {
         this.level = level;
+        addScore(0); // update graphics
     }
 
     public long getScore(){
