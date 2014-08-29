@@ -14,7 +14,7 @@ public class ScoreActor extends Label {
     private long level;
 
     public ScoreActor() {
-        super("Level: 1\nScore: 0\nMax: 0", new LabelStyle(new BitmapFont(), Color.WHITE));
+        super("", new LabelStyle(new BitmapFont(), Color.WHITE));
         value = 0;
         level = 1;
         maxValue = 0;
@@ -23,8 +23,9 @@ public class ScoreActor extends Label {
     public void addScore(long add){
         value += add;
         maxValue = maxValue < value ? value : maxValue;
-        setText("Level: " + Long.toString(level) + "\nScore: " + Long.toString(value) + "\nMax: " + Long.toString(maxValue) + "\nMemory (in kb): "+
-                Long.toString(Gdx.app.getJavaHeap()/1024) + ",  "+ Long.toString(Gdx.app.getNativeHeap()/1024));
+        setText("Score: " + Long.toString(value));
+        //setText("Level: " + Long.toString(level) + "\nScore: " + Long.toString(value) + "\nMax: " + Long.toString(maxValue) + "\nMemory (in kb): "+
+        //        Long.toString(Gdx.app.getJavaHeap()/1024) + ",  "+ Long.toString(Gdx.app.getNativeHeap()/1024));
     }
 
     public void setLevel(long level) {

@@ -193,8 +193,16 @@ public class GameplayStage extends Stage {
                 continue;
             }
 
-            if (bulb.getShape().contains(actor.getX(), actor.getY())){
-                if (actor.getColor().toIntBits() == bulb.getColor().toIntBits()){
+            if (bulb.getShape().contains(actor.getX(), actor.getY())){ // todo: rewrite to more accurate algorithm
+
+                if (actor instanceof PowerUpActor){
+                    powerupBubble((PowerUpActor) actor);
+                }
+                else if (actor.getColor().toIntBits() == bulb.getColor().toIntBits()
+                        || bulb.getColor().toIntBits() == Color.WHITE.toIntBits()
+                        || bulb.getColor().toIntBits() == Color.GREEN.toIntBits()
+                        || bulb.getColor().toIntBits() == Color.RED.toIntBits())
+                {
                     goodBubble(actor);
                 }
                 else
@@ -203,6 +211,24 @@ public class GameplayStage extends Stage {
                 }
             }
         }
+    }
+
+    private void powerupBubble(PowerUpActor actor){
+        actor.connected = true;
+        bulb.addAction(
+                Actions.sequence(
+                        Actions.color(Color.WHITE),
+                        Actions.delay(5f),
+                        Actions.color(Color.RED),
+                        Actions.delay(0.5f),
+                        Actions.color(Color.WHITE),
+                        Actions.delay(0.5f),
+                        Actions.color(Color.RED),
+                        Actions.delay(0.5f),
+                        Actions.color(colors.random())
+                )
+        );
+        soundGoodup.play(1f);
     }
 
     private void goodBubble(CircleActor actor){
@@ -218,7 +244,13 @@ public class GameplayStage extends Stage {
     }
 
     private void createBubble() {
-        CircleActor actor = poolActors.obtain();
+        CircleActor actor;
+        if (MathUtils.randomBoolean(0.03f))
+            actor = new PowerUpActor(sr);
+        else if (MathUtils.randomBoolean(0.03f))
+            actor = new JokerActor(sr, colors.random());
+        else actor = poolActors.obtain();
+
         actor.setVisible(true);
         actor.setPosition(MathUtils.random(-100, 900), 500);
 
